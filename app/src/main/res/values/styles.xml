@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="MyTooltip" parent="Widget.MaterialComponents.Tooltip">
+        <item name="android:textAppearance">@style/MyTooltip.TextAppearance</item>
+    </style>
+
+    <style name="MyTooltip.TextAppearance" parent="@style/TextAppearance.MaterialComponents.Tooltip">
+        <item name="android:textColor">?colorAccent</item>
+        <item name="android:fontFamily">@font/inter_semibold</item>
+        <item name="fontFamily">@font/inter_semibold</item>
+    </style>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/text"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fontFamily="@font/inter_semibold"
+    android:textColor="?colorAccent"
+    app:drawableStartCompat="@drawable/ic_arrow_right"
+    app:drawableTint="?colorAccent" />

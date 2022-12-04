@@ -1,0 +1,43 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="Theme.Oop8" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">#8c66ff</item>
+        <item name="colorPrimaryDark">#18171c</item>
+        <item name="colorAccent">#fff</item>
+        <item name="colorSecondary">#c2b8e0</item>
+        <item name="colorOnSecondary">#a394d1</item>
+        <item name="strokeColor">#8c66ff</item>
+        <item name="android:candidatesTextStyleSpans">candidates</item>
+
+        <item name="android:forceDarkAllowed" >false</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar" >false</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowFullscreen">false</item>
+        <item name="android:fitsSystemWindows">false</item>
+
+        <item name="android:enforceNavigationBarContrast" >false</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+
+        <item name="background">@android:color/transparent</item>
+        <item name="android:colorBackground">@android:color/transparent</item>
+        <item name="android:textCursorDrawable">@null</item>
+        <item name="android:splashScreenTheme" tools:targetApi="s">@style/Theme.SplashScreen</item>
+    </style>
+
+    <style name="Theme.Oop8.Transparent">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="SplashTheme" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/splashColor</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="windowSplashScreenAnimationDuration">500</item>
+        <item name="postSplashScreenTheme">@style/Theme.Oop8</item>
+    </style>
+
+</resources>
