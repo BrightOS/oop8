@@ -66,7 +66,7 @@ class TreeFragment : Fragment() {
                 TreeObservable.instance.notifyObservers()
             }
         }
-        
+
         TreeObservable.instance.registerObserver {
             println("lol")
             val roots = arrayListOf<TreeNode>()
