@@ -6,9 +6,9 @@ import ru.brightos.oop8.utils.extendedListOf
 import ru.brightos.oop8.view.SelectableView
 
 class TreeObservable(
-    private val list: ExtendedList<StickyShape>
-) : Observable<ExtendedList<StickyShape>> {
-    private val observers = arrayListOf<(ExtendedList<StickyShape>) -> Unit>()
+    private val list: ExtendedList<SelectableView>
+) : Observable<ExtendedList<SelectableView>> {
+    private val observers = arrayListOf<(ExtendedList<SelectableView>) -> Unit>()
 
     override fun notifyObservers() {
         observers.forEach {
@@ -16,7 +16,7 @@ class TreeObservable(
         }
     }
 
-    override fun registerObserver(observer: (ExtendedList<StickyShape>) -> Unit) {
+    override fun registerObserver(observer: (ExtendedList<SelectableView>) -> Unit) {
         observers.add(observer)
     }
 
@@ -28,16 +28,9 @@ class TreeObservable(
         lateinit var instance: TreeObservable
 
         fun newInstance(list: ExtendedList<SelectableView>): TreeObservable {
-            val newList = extendedListOf<StickyShape>()
-            list.forEach {
-                newList.add(StickyShape(it.shape))
-            }
             if (this::instance.isInitialized.not())
-                instance = TreeObservable(newList)
+                instance = TreeObservable(list)
             return instance
-        }
-
-        fun setStickyChildren(ss: StickyShape, ) {
         }
     }
 }

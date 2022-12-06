@@ -43,6 +43,8 @@ class MainActivity : AppCompatActivity(), OnMoveKeyPressedListener, OnDeleteClic
 
     private lateinit var binding: ActivityMainBinding
 
+    private val shapeLoadFactory: ShapeLoadFactory = ShapeLoadFactoryImpl()
+
     private val onItemSelectListener = object : OnItemSelectListener {
         override fun deselectAllObjects() {
             shapesList.forEach { it.deselect() }
@@ -122,19 +124,10 @@ class MainActivity : AppCompatActivity(), OnMoveKeyPressedListener, OnDeleteClic
         }
 
         preferenceRepository.selectedSizeLive.observe(this) { value ->
-            val dpValue = value.dp
-            var couldBeResized = true
-
             shapesList.forEach {
-                if (it.isSelected)
-                    couldBeResized = couldBeResized && it.couldBeResized(dpValue, parentBounds)
+                if (it.isSelected && it.couldBeResized(value.dp, parentBounds))
+                    it.resize(value.dp)
             }
-
-            if (couldBeResized)
-                shapesList.forEach {
-                    if (it.isSelected)
-                        it.resize(dpValue)
-                }
         }
 
         TreeObservable.instance.registerObserver {
@@ -194,59 +187,76 @@ class MainActivity : AppCompatActivity(), OnMoveKeyPressedListener, OnDeleteClic
 
         when (moveKeyEvent) {
             MoveKeyEvent.LEFT -> {
-                var minLeft = parentBounds.right
-                shapesList.forEach {
-                    if (it.isSelected && it.shape.fromX < minLeft) minLeft = it.shape.fromX
-                }
-
-                println("left ${minLeft - delta} ${parentBounds.left}")
-
-                if (minLeft - delta >= parentBounds.left) {
-                    shapesList.forEach {
-                        if (it.isSelected)
-                            it.move(-delta, 0)
+                shapesList.forEachIndexed { i, outer ->
+                    if (outer.shape.fromX - delta >= parentBounds.left && outer.isSelected) {
+                        shapesList.forEachIndexed { j, inner ->
+                            if (outer.shape.fromX == inner.shape.toX && i != j) {
+                                outer.shape.stickyShape.registerObserver {
+                                    inner.move(it)
+                                }
+                                inner.shape.stickyShape.registerObserver {
+                                    outer.move(it)
+                                }
+                            }
+                        }
+                        outer.move(MoveCommand(-delta, 0, true))
                     }
                 }
             }
 
             MoveKeyEvent.RIGHT -> {
-                var maxRight = parentBounds.left
                 shapesList.forEach {
-                    if (it.isSelected && it.shape.toX > maxRight) maxRight = it.shape.toX
-                }
-
-                if (maxRight + delta <= parentBounds.right) {
-                    shapesList.forEach {
-                        if (it.isSelected)
-                            it.move(delta, 0)
+                    shapesList.forEachIndexed { i, outer ->
+                        if (outer.shape.toX + delta <= parentBounds.right && outer.isSelected) {
+                            shapesList.forEachIndexed { j, inner ->
+                                if (outer.shape.toX == inner.shape.fromX && i != j) {
+                                    outer.shape.stickyShape.registerObserver {
+                                        inner.move(it)
+                                    }
+                                    inner.shape.stickyShape.registerObserver {
+                                        outer.move(it)
+                                    }
+                                }
+                            }
+                            outer.move(MoveCommand(delta, 0, true))
+                        }
                     }
                 }
             }
 
             MoveKeyEvent.UP -> {
-                var minTop = parentBounds.bottom
-                shapesList.forEach {
-                    if (it.isSelected && it.shape.fromY < minTop) minTop = it.shape.fromY
-                }
-
-                if (minTop - delta >= parentBounds.top) {
-                    shapesList.forEach {
-                        if (it.isSelected)
-                            it.move(0, -delta)
+                shapesList.forEachIndexed { i, outer ->
+                    if (outer.shape.fromY - delta >= parentBounds.top && outer.isSelected) {
+                        shapesList.forEachIndexed { j, inner ->
+                            if (outer.shape.fromY == inner.shape.toY && i != j) {
+                                println("Set sticky for $i and $j")
+                                outer.shape.stickyShape.registerObserver {
+                                    inner.move(it)
+                                }
+                                inner.shape.stickyShape.registerObserver {
+                                    outer.move(it)
+                                }
+                            }
+                        }
+                        outer.move(MoveCommand(0, -delta, true))
                     }
                 }
             }
 
             MoveKeyEvent.DOWN -> {
-                var maxBottom = parentBounds.top
-                shapesList.forEach {
-                    if (it.isSelected && it.shape.toY > maxBottom) maxBottom = it.shape.toY
-                }
-
-                if (maxBottom + delta <= parentBounds.bottom) {
-                    shapesList.forEach {
-                        if (it.isSelected)
-                            it.move(0, delta)
+                shapesList.forEachIndexed { i, outer ->
+                    if (outer.shape.toY + delta <= parentBounds.bottom && outer.isSelected) {
+                        shapesList.forEachIndexed { j, inner ->
+                            if (outer.shape.toY == inner.shape.fromY && i != j) {
+                                outer.shape.stickyShape.registerObserver {
+                                    inner.move(it)
+                                }
+                                inner.shape.stickyShape.registerObserver {
+                                    outer.move(it)
+                                }
+                            }
+                        }
+                        outer.move(MoveCommand(0, delta, true))
                     }
                 }
             }
@@ -324,7 +334,7 @@ class MainActivity : AppCompatActivity(), OnMoveKeyPressedListener, OnDeleteClic
                 SelectableView(
                     context = this,
                     attrs = null,
-                    shape = ShapeLoadFactory.createShape(it),
+                    shape = shapeLoadFactory.createShape(it),
                     onSingleObjectSelectedListener = onItemSelectListener
                 ).let { view ->
                     view.isSelected = false

@@ -7,6 +7,8 @@ import ru.brightos.oop8.view.SelectableView
 
 abstract class CShape {
 
+    val stickyShape = StickyShape()
+
     var centerX: Float
     var centerY: Float
     var height: Float
@@ -91,16 +93,25 @@ abstract class CShape {
     open fun couldBeResized(newWidth: Float, parentBounds: RectF) =
         (newWidth / 2).let {
             (centerX - it >= parentBounds.left
-                && centerY - it >= parentBounds.top
-                && (it * width / height).let {
+                    && centerY - it >= parentBounds.top
+                    && (it * width / height).let {
                 (centerX + it <= parentBounds.right
-                    && centerY + it <= parentBounds.bottom)
+                        && centerY + it <= parentBounds.bottom)
             })
         }
 
-    open fun move(deltaX: Int, deltaY: Int) {
-        centerX += deltaX
-        centerY += deltaY
+    open fun move(moveCommand: MoveCommand) {
+        centerX += moveCommand.deltaX
+        centerY += moveCommand.deltaY
+
+        if (moveCommand.fromUser)
+            stickyShape.onMoveProceed(
+                MoveCommand(
+                    deltaX = moveCommand.deltaX,
+                    deltaY = moveCommand.deltaY,
+                    fromUser = false
+                )
+            )
     }
 
     abstract fun save(): JSONObject

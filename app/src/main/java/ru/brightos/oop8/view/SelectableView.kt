@@ -196,8 +196,8 @@ open class SelectableView : View {
         onItemSelectListener?.onItemSelected(shape)
     }
 
-    fun move(deltaX: Int, deltaY: Int) {
-        shape.move(deltaX, deltaY)
+    fun move(moveCommand: MoveCommand) {
+        shape.move(moveCommand)
         layoutParams = generateLayoutParams()
         requestLayout()
     }

@@ -86,11 +86,11 @@ class CGroup(val shapesList: ExtendedList<CShape>) : CShape(
             }
         }
 
-    override fun move(deltaX: Int, deltaY: Int) {
+    override fun move(moveCommand: MoveCommand) {
         shapesList.forEach {
-            it.move(deltaX, deltaY)
+            it.move(moveCommand)
         }
-        super.move(deltaX, deltaY)
+        super.move(moveCommand)
     }
 
     override fun onShapeResized(value: Float) {
@@ -130,11 +130,11 @@ class CGroup(val shapesList: ExtendedList<CShape>) : CShape(
         const val content = "content"
         const val typeName = "group"
 
-        fun load(jsonObject: JSONObject): CGroup {
+        fun load(jsonObject: JSONObject, factory: ShapeLoadFactory): CGroup {
             val shapesList = extendedListOf<CShape>()
             val content = jsonObject.getJSONArray("content")
             content.forEach {
-                shapesList.add(ShapeLoadFactory.createShape(it))
+                shapesList.add(factory.createShape(it))
             }
             return CGroup(shapesList)
         }
