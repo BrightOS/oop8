@@ -116,6 +116,14 @@ class CGroup(val shapesList: ExtendedList<CShape>) : CShape(
         }
         return couldBeResized
     }
+    
+    override fun couldBeMoved(moveCommand: MoveCommand, parentBounds: RectF): Boolean {
+        var couldBeMoved = true
+        shapesList.forEach {
+            couldBeMoved = couldBeMoved && it.couldBeMoved(moveCommand, parentBounds)
+        }
+        return couldBeMoved
+    }
 
     override fun save() = JSONObject().apply {
         put(type, typeName)

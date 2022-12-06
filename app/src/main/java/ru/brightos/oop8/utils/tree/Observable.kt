@@ -5,6 +5,6 @@ import ru.brightos.oop8.view.SelectableView
 
 interface Observable<E> {
     fun notifyObservers()
-    fun registerObserver(observer: (E) -> Unit)
+    fun registerObserver(id: Long = 0L, observer: (E) -> Unit)
     fun deleteAllObservers()
 }

@@ -187,78 +187,84 @@ class MainActivity : AppCompatActivity(), OnMoveKeyPressedListener, OnDeleteClic
 
         when (moveKeyEvent) {
             MoveKeyEvent.LEFT -> {
-                shapesList.forEachIndexed { i, outer ->
-                    if (outer.shape.fromX - delta >= parentBounds.left && outer.isSelected) {
-                        shapesList.forEachIndexed { j, inner ->
-                            if (outer.shape.fromX == inner.shape.toX && i != j) {
-                                outer.shape.stickyShape.registerObserver {
-                                    inner.move(it)
-                                }
-                                inner.shape.stickyShape.registerObserver {
-                                    outer.move(it)
+                shapesList.forEach { outer ->
+                    if (outer.isSelected)
+                        MoveCommand(-delta, 0, outer.shape.id).let {
+                            if (outer.shape.couldBeMoved(it, parentBounds)) {
+                                outer.move(it)
+                                shapesList.forEach { inner ->
+                                    registerStickyObservers(outer, inner)
                                 }
                             }
                         }
-                        outer.move(MoveCommand(-delta, 0, true))
-                    }
                 }
             }
 
             MoveKeyEvent.RIGHT -> {
-                shapesList.forEach {
-                    shapesList.forEachIndexed { i, outer ->
-                        if (outer.shape.toX + delta <= parentBounds.right && outer.isSelected) {
-                            shapesList.forEachIndexed { j, inner ->
-                                if (outer.shape.toX == inner.shape.fromX && i != j) {
-                                    outer.shape.stickyShape.registerObserver {
-                                        inner.move(it)
-                                    }
-                                    inner.shape.stickyShape.registerObserver {
-                                        outer.move(it)
-                                    }
+                shapesList.forEach { outer ->
+                    if (outer.isSelected)
+                        MoveCommand(delta, 0, outer.shape.id).let {
+                            if (outer.shape.couldBeMoved(it, parentBounds)) {
+                                outer.move(it)
+                                shapesList.forEach { inner ->
+                                    registerStickyObservers(outer, inner)
                                 }
                             }
-                            outer.move(MoveCommand(delta, 0, true))
                         }
-                    }
                 }
             }
 
             MoveKeyEvent.UP -> {
-                shapesList.forEachIndexed { i, outer ->
-                    if (outer.shape.fromY - delta >= parentBounds.top && outer.isSelected) {
-                        shapesList.forEachIndexed { j, inner ->
-                            if (outer.shape.fromY == inner.shape.toY && i != j) {
-                                println("Set sticky for $i and $j")
-                                outer.shape.stickyShape.registerObserver {
-                                    inner.move(it)
-                                }
-                                inner.shape.stickyShape.registerObserver {
-                                    outer.move(it)
+                shapesList.forEach { outer ->
+                    if (outer.isSelected)
+                        MoveCommand(0, -delta, outer.shape.id).let {
+                            if (outer.shape.couldBeMoved(it, parentBounds)) {
+                                outer.move(it)
+                                shapesList.forEach { inner ->
+                                    registerStickyObservers(outer, inner)
                                 }
                             }
                         }
-                        outer.move(MoveCommand(0, -delta, true))
-                    }
                 }
             }
 
             MoveKeyEvent.DOWN -> {
-                shapesList.forEachIndexed { i, outer ->
-                    if (outer.shape.toY + delta <= parentBounds.bottom && outer.isSelected) {
-                        shapesList.forEachIndexed { j, inner ->
-                            if (outer.shape.toY == inner.shape.fromY && i != j) {
-                                outer.shape.stickyShape.registerObserver {
-                                    inner.move(it)
-                                }
-                                inner.shape.stickyShape.registerObserver {
-                                    outer.move(it)
+                shapesList.forEach { outer ->
+                    if (outer.isSelected)
+                        MoveCommand(0, delta, outer.shape.id).let {
+                            if (outer.shape.couldBeMoved(it, parentBounds)) {
+                                outer.move(it)
+                                shapesList.forEach { inner ->
+                                    registerStickyObservers(outer, inner)
                                 }
                             }
                         }
-                        outer.move(MoveCommand(0, delta, true))
-                    }
                 }
+            }
+        }
+    }
+
+    fun registerStickyObservers(outer: SelectableView, inner: SelectableView) {
+        if (inner.shape.id != outer.shape.id
+            && outer.shape.stickyShape.isSticked(inner.shape.id).not()
+            && outer.isIntersected(inner)
+        ) {
+            println("touched")
+            outer.shape.stickyShape.registerObserver(inner.shape.id) {
+                if (inner.shape.couldBeMoved(it, parentBounds) && outer.shape.couldBeMoved(
+                        it,
+                        parentBounds
+                    )
+                )
+                    inner.move(it)
+            }
+            inner.shape.stickyShape.registerObserver(outer.shape.id) {
+                if (inner.shape.couldBeMoved(it, parentBounds) && outer.shape.couldBeMoved(
+                        it,
+                        parentBounds
+                    )
+                )
+                    outer.move(it)
             }
         }
     }

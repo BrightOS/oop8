@@ -10,10 +10,12 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
 import androidx.core.graphics.ColorUtils
+import androidx.core.util.toRange
 import ru.brightos.oop8.R
 import ru.brightos.oop8.model.*
 import ru.brightos.oop8.utils.dp
 import ru.brightos.oop8.utils.edit.ShapeType
+import ru.brightos.oop8.utils.overlap
 
 
 open class SelectableView : View {
@@ -49,6 +51,13 @@ open class SelectableView : View {
         )
 
     fun isTapInRegion(x: Int, y: Int) = shape.isTapInPath(x, y)
+
+    fun isIntersected(other: SelectableView) =
+        other.shape.let {
+            println("this: $bounds | other: ${other.bounds}")
+            return@let (it.fromX..it.toX).toRange().overlap((shape.fromX..shape.toX).toRange()) &&
+                (it.fromY..it.toY).toRange().overlap((shape.fromY..shape.toY).toRange())
+        }
 
     var fillColor: Int
         get() = shape.color
@@ -195,6 +204,9 @@ open class SelectableView : View {
         invalidate()
         onItemSelectListener?.onItemSelected(shape)
     }
+
+    fun couldBeMoved(moveCommand: MoveCommand, parentBounds: RectF) =
+        shape.couldBeMoved(moveCommand, parentBounds)
 
     fun move(moveCommand: MoveCommand) {
         shape.move(moveCommand)

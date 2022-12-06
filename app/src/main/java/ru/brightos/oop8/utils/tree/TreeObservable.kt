@@ -16,7 +16,7 @@ class TreeObservable(
         }
     }
 
-    override fun registerObserver(observer: (ExtendedList<SelectableView>) -> Unit) {
+    override fun registerObserver(id: Long, observer: (ExtendedList<SelectableView>) -> Unit) {
         observers.add(observer)
     }
 

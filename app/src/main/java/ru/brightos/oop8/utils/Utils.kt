@@ -3,6 +3,7 @@ package ru.brightos.oop8.utils
 import android.content.res.Resources
 import android.graphics.Path
 import android.graphics.PointF
+import android.util.Range
 import android.util.TypedValue
 import org.json.JSONArray
 import org.json.JSONObject
@@ -15,6 +16,12 @@ val Number.dp
     get() = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP, this.toFloat(), Resources.getSystem().displayMetrics
     )
+
+fun Range<Float>.overlap(b: Range<Float>): Boolean {
+    val max = maxOf(this.lower, this.upper)
+    val min = minOf(this.lower, this.upper)
+    return (b.lower >= min && b.lower <= max) || (b.upper >= min && b.upper <= max)
+}
 
 val Number.px
     get() = (this.toFloat() / Resources.getSystem().displayMetrics.density)
