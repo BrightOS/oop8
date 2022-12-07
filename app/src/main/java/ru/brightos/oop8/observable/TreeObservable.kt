@@ -1,8 +1,6 @@
-package ru.brightos.oop8.utils.tree
+package ru.brightos.oop8.observable
 
 import ru.brightos.oop8.data.ExtendedList
-import ru.brightos.oop8.model.StickyShape
-import ru.brightos.oop8.utils.extendedListOf
 import ru.brightos.oop8.view.SelectableView
 
 class TreeObservable(

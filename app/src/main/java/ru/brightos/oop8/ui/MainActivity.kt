@@ -14,7 +14,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONArray
 import org.json.JSONObject
 import ru.brightos.oop8.R
-import ru.brightos.oop8.data.ExtendedList
 import ru.brightos.oop8.data.PreferenceRepository
 import ru.brightos.oop8.databinding.ActivityMainBinding
 import ru.brightos.oop8.model.*
@@ -23,7 +22,7 @@ import ru.brightos.oop8.utils.edit.OnDeleteClickedListener
 import ru.brightos.oop8.utils.edit.OnGroupClickedListener
 import ru.brightos.oop8.utils.move.MoveKeyEvent
 import ru.brightos.oop8.utils.move.OnMoveKeyPressedListener
-import ru.brightos.oop8.utils.tree.TreeObservable
+import ru.brightos.oop8.observable.TreeObservable
 import ru.brightos.oop8.view.OnItemSelectListener
 import ru.brightos.oop8.view.SelectableView
 import java.io.File

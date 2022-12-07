@@ -125,6 +125,14 @@ class CGroup(val shapesList: ExtendedList<CShape>) : CShape(
         return couldBeMoved
     }
 
+    override fun isIntersected(other: CShape): Boolean {
+        var isIntersected = false
+        shapesList.forEach {
+            isIntersected = isIntersected || it.isIntersected(other)
+        }
+        return isIntersected
+    }
+
     override fun save() = JSONObject().apply {
         put(type, typeName)
         put(content, JSONArray().apply {

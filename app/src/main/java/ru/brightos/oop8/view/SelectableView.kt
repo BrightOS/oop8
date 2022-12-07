@@ -53,11 +53,7 @@ open class SelectableView : View {
     fun isTapInRegion(x: Int, y: Int) = shape.isTapInPath(x, y)
 
     fun isIntersected(other: SelectableView) =
-        other.shape.let {
-            println("this: $bounds | other: ${other.bounds}")
-            return@let (it.fromX..it.toX).toRange().overlap((shape.fromX..shape.toX).toRange()) &&
-                (it.fromY..it.toY).toRange().overlap((shape.fromY..shape.toY).toRange())
-        }
+        shape.isIntersected(other.shape)
 
     var fillColor: Int
         get() = shape.color

@@ -2,14 +2,17 @@ package ru.brightos.oop8.model
 
 import android.graphics.*
 import androidx.core.graphics.ColorUtils
+import androidx.core.util.toRange
 import org.json.JSONObject
+import ru.brightos.oop8.observable.StickyObservable
+import ru.brightos.oop8.utils.overlap
 import ru.brightos.oop8.view.SelectableView
 
 var lastID = 0L
 
 abstract class CShape {
 
-    val stickyShape = StickyShape()
+    val stickyShape = StickyObservable()
 
     val id = lastID++
     var lastOperationID = -1L
@@ -86,6 +89,13 @@ abstract class CShape {
         )
     }
 
+    open fun isIntersected(other: CShape) =
+        if (other is CGroup)
+            (other as CGroup).isIntersected(this)
+        else
+            (other.fromX..other.toX).toRange().overlap((fromX..toX).toRange()) &&
+                    (other.fromY..other.toY).toRange().overlap((fromY..toY).toRange())
+
     open fun onShapeResized(value: Float) {
         width = value
         height = value
@@ -98,19 +108,19 @@ abstract class CShape {
     open fun couldBeResized(newWidth: Float, parentBounds: RectF) =
         (newWidth / 2).let {
             (centerX - it >= parentBounds.left
-                && centerY - it >= parentBounds.top
-                && (it * width / height).let {
+                    && centerY - it >= parentBounds.top
+                    && (it * width / height).let {
                 (centerX + it <= parentBounds.right
-                    && centerY + it <= parentBounds.bottom)
+                        && centerY + it <= parentBounds.bottom)
             })
         }
 
     open fun couldBeMoved(moveCommand: MoveCommand, parentBounds: RectF) =
         moveCommand.let {
             return@let fromX + it.deltaX in parentBounds.left..parentBounds.right
-                && toX + it.deltaX in parentBounds.left..parentBounds.right
-                && fromY + it.deltaY in parentBounds.top..parentBounds.bottom
-                && toY + it.deltaY in parentBounds.top..parentBounds.bottom
+                    && toX + it.deltaX in parentBounds.left..parentBounds.right
+                    && fromY + it.deltaY in parentBounds.top..parentBounds.bottom
+                    && toY + it.deltaY in parentBounds.top..parentBounds.bottom
         }
 
     open fun move(moveCommand: MoveCommand) {

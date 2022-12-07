@@ -1,7 +1,4 @@
-package ru.brightos.oop8.utils.tree
-
-import ru.brightos.oop8.data.ExtendedList
-import ru.brightos.oop8.view.SelectableView
+package ru.brightos.oop8.observable
 
 interface Observable<E> {
     fun notifyObservers()

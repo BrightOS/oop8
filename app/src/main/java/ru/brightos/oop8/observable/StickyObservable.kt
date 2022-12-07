@@ -1,13 +1,14 @@
-package ru.brightos.oop8.model
+package ru.brightos.oop8.observable
 
-import ru.brightos.oop8.utils.tree.Observable
+import ru.brightos.oop8.model.MoveCommand
 
-class StickyShape : Observable<MoveCommand> {
+class StickyObservable : Observable<MoveCommand> {
     private val observers = arrayListOf<(MoveCommand) -> Unit>()
-    private val observerIDs = arrayListOf<Long>()
+    private val shapesIDs = arrayListOf<Long>()
+
     var currentDeltaCoordinates = MoveCommand(0, 0, -1)
 
-    fun isSticked(id: Long) = observerIDs.contains(id)
+    fun isSticked(id: Long) = shapesIDs.contains(id)
 
     fun onMoveProceed(moveCommand: MoveCommand) {
         observers.forEach {
@@ -22,14 +23,14 @@ class StickyShape : Observable<MoveCommand> {
     }
 
     override fun registerObserver(id: Long, observer: (MoveCommand) -> Unit) {
-        if (observerIDs.contains(id).not()) {
+        if (shapesIDs.contains(id).not()) {
             observers.add(observer)
-            observerIDs.add(id)
+            shapesIDs.add(id)
         }
     }
 
     override fun deleteAllObservers() {
         observers.clear()
-        observerIDs.clear()
+        shapesIDs.clear()
     }
 }
